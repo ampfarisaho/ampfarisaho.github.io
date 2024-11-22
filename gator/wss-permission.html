@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gator WRITE_SECURE_SETTINGS Permission Guide</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #333;
+        }
+
+        ul {
+            list-style-type: disc;
+            margin-left: 20px;
+        }
+
+        pre {
+            background-color: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            overflow-x: auto;
+            font-family: monospace;
+        }
+
+        code {
+            font-family: monospace;
+            color: #d14;
+        }
+
+        .step {
+            margin-bottom: 20px;
+        }
+
+        .step h3 {
+            color: #444;
+        }
+
+        .note {
+            background-color: #ffeb3b;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            font-weight: bold;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        // Function to apply bold transformation for **word** to <strong>word</strong>
+        function boldText(inputString) {
+            return inputString.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
+        // Function to transform markdown-style links [text](url) into HTML <a> tags
+        function parseLinks(inputString) {
+            return inputString.replace(/\[([^\]]+)\]\((https?:\/\/[^\)]+)\)/g, '<a href="$2" target="_blank">$1</a>');
+        }
+
+        // Function to transform words wrapped in backticks `word_here` into <code>word_here</code>
+        function parseCodeSnippets(inputString) {
+            // Regex to match words wrapped in backticks and replace with <code>word_here</code>
+            return inputString.replace(/`([^`]+)`/g, '<code>$1</code>');
+        }
+
+        // Function to load translations from a JSON file based on the selected language
+        function loadTranslations(languageCode) {
+            $.getJSON('translations/wss-permission.json', function (data) {
+                // Check if the selected language exists in the translations file
+                let isTranslatedLang = data[languageCode]
+                const translations = isTranslatedLang ? data[languageCode] : data['en']
+                console.log(translations);
+
+                // Iterate over all translation keys and update the corresponding elements in the DOM
+                $('[data-translate]').each(function () {
+                    const translationKey = $(this).data('translate');
+                    if (translations[translationKey]) {
+                        let translatedText = translations[translationKey];
+
+                        // Apply transformations: bold text, links, and code snippets
+                        translatedText = boldText(translatedText);  // Bold transformation
+                        translatedText = parseLinks(translatedText); // Link transformation
+                        translatedText = parseCodeSnippets(translatedText); // Code snippet transformation
+
+                        // Set the translated (and transformed) text in the element
+                        $(this).html(translatedText); // Use .html() to preserve HTML tags like <strong>, <a>, and <code>
+                    }
+                });
+            });
+        }
+
+        // Set the default language to English (en)
+        $(document).ready(function () {
+            loadTranslations(navigator.language.toLowerCase());
+        });
+    </script>
+</head>
+
+<body>
+    <h1 data-translate="h1_title"></h1>
+
+    <p data-translate="intro_paragraph1"></p>
+    <p data-translate="intro_paragraph2"></p>
+
+    <h2 data-translate="step1_title"></h2>
+    <ul>
+        <li data-translate="download_adb">
+            <a href="https://developer.android.com/tools/releases/platform-tools" target="_blank"
+                data-translate="download_link">Android SDK Platform Tools download page</a>
+        </li>
+        <li data-translate="install_adb_drivers">
+            <a href="https://developer.android.com/studio/run/oem-usb" target="_blank"
+                data-translate="install_drivers_link">Download drivers</a>
+        </li>
+    </ul>
+
+    <h2 data-translate="step2_title"></h2>
+    <ul>
+        <li data-translate="open_settings">Open **Settings** on your Android device.</li>
+        <li data-translate="about_phone">Scroll down and tap **About Phone**.</li>
+        <li data-translate="tap_build_number">Tap **Build Number** 7 times to unlock Developer Options.</li>
+        <li data-translate="go_back_system">Go back to **Settings** and tap **System** > **Developer Options**.</li>
+        <li data-translate="enable_usb_debugging">Enable **USB Debugging** by turning on the toggle.</li>
+    </ul>
+
+    <h2 data-translate="step3_title"></h2>
+    <h3 data-translate="miui_title"></h3>
+    <p data-translate="miui_instructions"></p>
+
+    <h3 data-translate="coloros_title"></h3>
+    <p data-translate="coloros_instructions"></p>
+
+    <h3 data-translate="flyme_title"></h3>
+    <p data-translate="flyme_instructions"></p>
+
+    <h2 data-translate="step4_title"></h2>
+    <ul>
+        <li data-translate="connect_device">Use a USB cable to connect your Android device to your computer.</li>
+        <li data-translate="usb_popup">A pop-up should appear on your phone asking if you want to allow USB debugging.
+            Tap **Allow**.</li>
+    </ul>
+
+    <h2 data-translate="step5_title"></h2>
+    <ul>
+        <li data-translate="open_command_prompt">Open **Command Prompt** (on Windows) or **Terminal** (on macOS/Linux).
+        </li>
+        <li data-translate="navigate_adb_folder">Navigate to the folder where you extracted ADB. For example:</li>
+        <pre data-translate="windows_command">cd C:\adb</pre>
+        <pre data-translate="macos_linux_command">cd /Users/yourname/adb</pre>
+        <li data-translate="run_adb_devices">Run the following command to check if your device is connected:</li>
+        <pre data-translate="adb_devices_command">adb devices</pre>
+    </ul>
+
+    <h2 data-translate="step6_title"></h2>
+    <ul>
+        <li data-translate="grant_permission_command">In your terminal or command prompt, run the following command:
+        </li>
+        <pre
+            data-translate="grant_permission_code">adb shell pm grant com.mitigator.gator android.permission.WRITE_SECURE_SETTINGS</pre>
+    </ul>
+
+    <h2 data-translate="step7_title"></h2>
+    <ul>
+        <li data-translate="verify_permission">To confirm that the permission was successfully granted, you can run this
+            command:</li>
+        <pre
+            data-translate="verify_permission_command">adb shell dumpsys package com.mitigator.gator | grep WRITE_SECURE_SETTINGS</pre>
+        <li data-translate="permission_granted_output">If everything is correct, you'll see the permission listed in the
+            output:</li>
+        <pre data-translate="permission_granted_example">android.permission.WRITE_SECURE_SETTINGS: granted=true</pre>
+    </ul>
+</body>
+
+</html>
